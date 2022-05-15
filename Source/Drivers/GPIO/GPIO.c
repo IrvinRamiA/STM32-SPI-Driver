@@ -185,6 +185,20 @@ void GPIO_DeInit(GPIO_RegDef_t *pGPIOx)
     }
 }
 
+void GPIO_SetPinAsOutput(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber)
+{
+	GPIO_Handle_t gpioHandle;
+
+	gpioHandle.pGPIOx = pGPIOx;
+	gpioHandle.GPIO_PinConfiguration.GPIO_PinNumber = pinNumber;
+	gpioHandle.GPIO_PinConfiguration.GPIO_PinMode = GPIO_MODE_OUT;
+	gpioHandle.GPIO_PinConfiguration.GPIO_PinSpeed = GPIO_SPEED_FAST;
+	gpioHandle.GPIO_PinConfiguration.GPIO_PinOPType = GPIO_OP_TYPE_PP;
+	gpioHandle.GPIO_PinConfiguration.GPIO_PinPuPdControl = GPIO_NO_PUPD;
+
+	GPIO_Init(&gpioHandle);
+}
+
 uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
 {
     uint8_t value;
@@ -205,7 +219,6 @@ uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx)
 
 void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber, uint8_t Value)
 {
-
     if (Value == GPIO_PIN_SET)
     {
         // write 1 to the output data register at the bit field corresponding to the pin number
