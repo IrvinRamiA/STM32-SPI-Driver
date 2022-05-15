@@ -105,6 +105,8 @@
  * RM - Pages 64-67 - Table 1
  */
 #define SPI1_BASEADDR                   (APB2PERIPH_BASEADDR + 0x3000)
+#define SYSCFG_BASEADDR				    (APB2PERIPH_BASEADDR + 0X3800)
+#define EXTI_BASEADDR				    (APB2PERIPH_BASEADDR + 0X3C00)
 
 /*----------------------------------------------------------------------------*/
 /* END: BASE ADDRESSES DEFINITIONS                                            */
@@ -129,6 +131,8 @@ typedef struct
     __vo uint32_t IDR;     /* GPIO Port Input Data Register,        Address offset: 0x10 */
     __vo uint32_t ODR;     /* GPIO Port Output Data Register,       Address offset: 0x14 */
     __vo uint32_t BSRR;    /* GPIO Port Bit Set/Reset Register,     Address offset: 0x18 */
+    __vo uint32_t LCKR;
+	__vo uint32_t AFR[2];
 } GPIO_RegDef_t;
 
 /**
@@ -190,6 +194,33 @@ typedef struct
     __vo uint32_t I2SPR;   /* SPI_I2S Prescaler Register,     Address offset: 0x20 */
 } SPI_RegDef_t;
 
+/**
+ * @brief Peripheral Register Definition Structure for SYSCFG
+ */ 
+typedef struct
+{
+	volatile uint32_t MEMRMP;
+	volatile uint32_t PMC;
+	volatile uint32_t EXTICR[4];
+	uint32_t RESERVED1[2];
+	volatile uint32_t CMPCR;
+	uint32_t RESERVED2[2];
+	volatile uint32_t CFGR;
+} SysCfgRegDef_t;
+
+/**
+ * @brief Peripheral Register Definition Structure for EXTI
+ */
+typedef struct
+{
+	volatile uint32_t IMR;
+	volatile uint32_t EMR;
+	volatile uint32_t RTSR;
+	volatile uint32_t FTSR;
+	volatile uint32_t SWIER;
+	volatile uint32_t PR;
+} ExtiRegDef_t;
+
 /*----------------------------------------------------------------------------*/
 /* END: PERIPHERAL REGISTER DEFINITION STRUCTURES                             */
 /*----------------------------------------------------------------------------*/
@@ -209,6 +240,8 @@ typedef struct
 #define GPIOI                           ((GPIO_RegDef_t *)GPIOI_BASEADDR)
 
 #define RCC                             ((RCC_RegDef_t *)RCC_BASEADDR)
+#define EXTI 						    ((ExtiRegDef_t *)EXTI_BASEADDR)
+#define SYSCFG 						    ((SysCfgRegDef_t *)SYSCFG_BASEADDR)
 
 #define SPI1                            ((SPI_RegDef_t *)SPI1_BASEADDR)
 #define SPI2                            ((SPI_RegDef_t *)SPI2_BASEADDR)
@@ -223,7 +256,7 @@ typedef struct
 /*----------------------------------------------------------------------------*/
 
 /**
- * @brief Enable Macros for GPIOx peripherals
+ * @brief CLock enable Macros for GPIOx peripherals
  */
 
 #define GPIOA_PCLK_EN()                 (RCC->AHB1ENR |= (1 << 0))
@@ -237,12 +270,17 @@ typedef struct
 #define GPIOI_PCLK_EN()                 (RCC->AHB1ENR |= (1 << 8))
 
 /**
- * @brief Enable Macros for SPIx peripherals
+ * @brief CLock enable Macros for SPIx peripherals
  */
 #define SPI1_PCLK_EN()                  (RCC->APB2ENR |= (1 << 12))
 #define SPI2_PCLK_EN()                  (RCC->APB1ENR |= (1 << 14))
 #define SPI3_PCLK_EN()                  (RCC->APB1ENR |= (1 << 15))
 #define SPI4_PCLK_EN()                  (RCC->APB2ENR |= (1 << 13))
+
+/**
+ * @brief Clock enable Macros for SPIx peripherals
+ */
+#define SYSCFG_PCLK_EN() 			    (RCC->APB2ENR |= (1 << 14))
 
 /**
  *@brief Macros to reset GPIOx peripherals
